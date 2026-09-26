@@ -67,5 +67,12 @@
       "verifyAndSave": "Verify & Save",
       "save": "Save"
     }
+  },
+  "update": {
+    "title": "Update Available",
+    "message": "A new version of Tractor ({{version}}) is available to download.",
+    "snoozeLabel": "Don't remind me again for 7 days",
+    "later": "Later",
+    "update": "Update"
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -6,10 +6,42 @@ import { StatusBar } from "expo-status-bar";
 // Import game screen controller directly
 import GameScreenController from "../src/screens/GameScreenController";
 import { VersionDisplay } from "../src/components/VersionDisplay";
+import { UpdateModal } from "../src/components/UpdateModal";
+import { AppUpdateInfo, updateService } from "../src/utils/updateService";
+import { getAppVersion } from "../src/utils/versioning";
 import { gameLogger } from "../src/utils/gameLogger";
 
 export default function Index() {
   const [hasError, setHasError] = useState(false);
+  const [updateInfo, setUpdateInfo] = useState<AppUpdateInfo | null>(null);
+  const [isUpdateModalVisible, setIsUpdateModalVisible] =
+    useState<boolean>(false);
+
+  useEffect(() => {
+    updateService
+      .checkForAvailableUpdate(getAppVersion())
+      .then((update) => {
+        if (update) {
+          setUpdateInfo(update);
+          setIsUpdateModalVisible(true);
+        }
+      })
+      .catch(() => {
+        // Eat all errors silently
+      });
+  }, []);
+
+  const handleDismissUpdate = (hideFor7Days: boolean) => {
+    if (hideFor7Days && updateInfo) {
+      updateService.snoozeUpdate(updateInfo.tagName, 7);
+    }
+    setIsUpdateModalVisible(false);
+  };
+
+  const handleOpenUpdate = async () => {
+    await updateService.openLatestReleasePage();
+    setIsUpdateModalVisible(false);
+  };
 
   // Function to render the game screen with error handling
   const renderGameScreen = () => {
@@ -59,6 +91,12 @@ export default function Index() {
         <View style={styles.gameContainer}>
           {renderGameScreen()}
           <VersionDisplay />
+          <UpdateModal
+            visible={isUpdateModalVisible}
+            updateInfo={updateInfo}
+            onDismiss={handleDismissUpdate}
+            onUpdate={handleOpenUpdate}
+          />
         </View>
       )}
     </SafeAreaView>
