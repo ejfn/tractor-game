@@ -95,7 +95,7 @@ describe("updateService", () => {
         {
           name: "tractor-v1.4.0.apk",
           browser_download_url:
-            "https://github.com/ejfn/Tractor/releases/download/v1.4.0/tractor-v1.4.0.apk",
+            "https://github.com/ejfn/tractor-game/releases/download/v1.4.0/tractor-v1.4.0.apk",
         },
       ],
     };
@@ -120,7 +120,7 @@ describe("updateService", () => {
         name: "Tractor v1.4.0",
         releaseUrl: LATEST_RELEASE_PAGE_URL,
         apkDownloadUrl:
-          "https://github.com/ejfn/Tractor/releases/download/v1.4.0/tractor-v1.4.0.apk",
+          "https://github.com/ejfn/tractor-game/releases/download/v1.4.0/tractor-v1.4.0.apk",
       });
     });
 

@@ -16,9 +16,9 @@ export interface UpdateSnoozeInfo {
 }
 
 export const LATEST_RELEASE_API =
-  "https://api.github.com/repos/ejfn/Tractor/releases/latest";
+  "https://api.github.com/repos/ejfn/tractor-game/releases/latest";
 export const LATEST_RELEASE_PAGE_URL =
-  "https://github.com/ejfn/Tractor/releases/latest";
+  "https://github.com/ejfn/tractor-game/releases/latest";
 
 const STORAGE_KEYS = {
   SNOOZE_VERSION: "tractor_update_snooze_version",

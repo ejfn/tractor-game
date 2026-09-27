@@ -24,9 +24,9 @@ describe("UpdateModal", () => {
     tagName: "v1.4.0",
     version: "1.4.0",
     name: "Tractor v1.4.0",
-    releaseUrl: "https://github.com/ejfn/Tractor/releases/latest",
+    releaseUrl: "https://github.com/ejfn/tractor-game/releases/latest",
     apkDownloadUrl:
-      "https://github.com/ejfn/Tractor/releases/download/v1.4.0/tractor-v1.4.0.apk",
+      "https://github.com/ejfn/tractor-game/releases/download/v1.4.0/tractor-v1.4.0.apk",
   };
 
   it("does not render when visible is false", () => {
