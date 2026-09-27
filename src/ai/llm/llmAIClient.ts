@@ -91,7 +91,7 @@ export async function callOpenRouter(
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`,
-        "HTTP-Referer": "https://github.com/ejfn/Tractor",
+        "HTTP-Referer": "https://github.com/ejfn/tractor-game",
         "X-Title": "Tractor Shengji AI",
       },
       body: postData,
@@ -191,7 +191,7 @@ function callOpenRouterNode(
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,
-          "HTTP-Referer": "https://github.com/ejfn/Tractor",
+          "HTTP-Referer": "https://github.com/ejfn/tractor-game",
           "X-Title": "Tractor Shengji AI",
           "Content-Length": Buffer.byteLength(postData),
         },

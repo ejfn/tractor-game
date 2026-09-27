@@ -5,7 +5,7 @@ A React Native mobile implementation of the classic Chinese card game **Tractor*
 ![Platforms](https://img.shields.io/badge/Platforms-Android%20%7C%20iOS-blue)
 ![React Native](https://img.shields.io/badge/React%20Native-Expo-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-green)
-![OTA Update](https://github.com/ejfn/Tractor/actions/workflows/ota-update.yml/badge.svg?branch=main)
+![OTA Update](https://github.com/ejfn/tractor-game/actions/workflows/ota-update.yml/badge.svg?branch=main)
 ![Tests](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/ejfn/675aef37358f9f2b3b290cbf79440460/raw/tractor-test-count.json)
 
 ## Screenshots
