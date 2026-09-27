@@ -114,7 +114,7 @@ const AIConfigModal: React.FC<AIConfigModalProps> = ({
         headers: apiKey
           ? {
               Authorization: `Bearer ${apiKey}`,
-              "HTTP-Referer": "https://github.com/ejfn/Tractor",
+              "HTTP-Referer": "https://github.com/ejfn/tractor-game",
               "X-Title": "Tractor Shengji AI",
             }
           : undefined,
