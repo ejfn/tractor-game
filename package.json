@@ -1,7 +1,9 @@
 {
-  "name": "tractor",
+  "name": "tractor-game",
   "main": "expo-router/entry",
   "version": "0.1.0",
+  "repository": "https://github.com/ejfn/tractor-game",
+  "homepage": "https://github.com/ejfn/tractor-game#readme",
   "scripts": {
     "start:dev": "node scripts/inject-dev-version.js && expo start --dev-client",
     "start": "node scripts/inject-dev-version.js && expo start",
