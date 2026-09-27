@@ -39,7 +39,7 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
     >
       <TouchableWithoutFeedback onPress={() => onDismiss(dontRemind)}>
         <View style={styles.backdrop}>
-          <TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => {}}>
             <View style={styles.dialogCard}>
               {/* Top Accent Icon Circle */}
               <View style={styles.iconContainer}>

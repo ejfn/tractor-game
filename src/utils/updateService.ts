@@ -52,7 +52,20 @@ export const isVersionNewer = (
 
   if (rMajor !== cMajor) return rMajor > cMajor;
   if (rMinor !== cMinor) return rMinor > cMinor;
-  return rPatch > cPatch;
+  if (rPatch !== cPatch) return rPatch > cPatch;
+
+  // If base semver numbers are identical, an official release (no hyphen)
+  // is newer than a pre-release/beta/dev build (contains hyphen).
+  const remoteClean = remoteTag.trim().replace(/^v/i, "");
+  const currentClean = currentVersion.trim().replace(/^v/i, "");
+  const currentIsPrerelease = currentClean.includes("-");
+  const remoteIsPrerelease = remoteClean.includes("-");
+
+  if (currentIsPrerelease && !remoteIsPrerelease) {
+    return true;
+  }
+
+  return false;
 };
 
 export const updateService = {
@@ -122,6 +135,7 @@ export const updateService = {
       const response = await fetch(LATEST_RELEASE_API, {
         headers: {
           Accept: "application/vnd.github.v3+json",
+          "User-Agent": "tractor-game-app",
         },
       });
 

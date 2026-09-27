@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Platform, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 
@@ -18,6 +18,10 @@ export default function Index() {
     useState<boolean>(false);
 
   useEffect(() => {
+    if (Platform.OS !== "android") {
+      return;
+    }
+
     updateService
       .checkForAvailableUpdate(getAppVersion())
       .then((update) => {
