@@ -1,5 +1,6 @@
 import "expo-sqlite/localStorage/install";
 import { Linking } from "react-native";
+import DeviceInfo from "react-native-device-info";
 import { gameLogger } from "./gameLogger";
 
 export interface AppUpdateInfo {
@@ -15,6 +16,7 @@ export interface UpdateSnoozeInfo {
   until: number;
 }
 
+export const PLAY_STORE_INSTALLER_PACKAGE = "com.android.vending";
 export const LATEST_RELEASE_API =
   "https://api.github.com/repos/ejfn/tractor-game/releases/latest";
 export const LATEST_RELEASE_PAGE_URL =
@@ -130,6 +132,16 @@ export const updateService = {
     currentVersion: string,
   ): Promise<AppUpdateInfo | null> {
     try {
+      // Early exit on Google Play Store installs to comply with store policy and save resources
+      try {
+        const installer = await DeviceInfo.getInstallerPackageName();
+        if (installer === PLAY_STORE_INSTALLER_PACKAGE) {
+          return null;
+        }
+      } catch {
+        // If installer query fails, proceed gracefully
+      }
+
       const snooze = this.getUpdateSnooze();
 
       const response = await fetch(LATEST_RELEASE_API, {

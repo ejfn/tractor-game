@@ -1,9 +1,11 @@
 import { Linking } from "react-native";
+import DeviceInfo from "react-native-device-info";
 import {
   isVersionNewer,
   LATEST_RELEASE_API,
   LATEST_RELEASE_PAGE_URL,
   parseCleanVersion,
+  PLAY_STORE_INSTALLER_PACKAGE,
   updateService,
 } from "../../src/utils/updateService";
 
@@ -101,6 +103,51 @@ describe("updateService", () => {
         },
       ],
     };
+
+    it("returns null and suppresses update check when installed from Google Play Store", async () => {
+      jest
+        .spyOn(DeviceInfo, "getInstallerPackageName")
+        .mockResolvedValueOnce(PLAY_STORE_INSTALLER_PACKAGE);
+
+      global.fetch = jest.fn();
+
+      const update = await updateService.checkForAvailableUpdate("v1.3.0");
+
+      expect(update).toBeNull();
+      expect(fetch).not.toHaveBeenCalled();
+    });
+
+    it("proceeds with update check if installer is not Google Play Store", async () => {
+      jest
+        .spyOn(DeviceInfo, "getInstallerPackageName")
+        .mockResolvedValueOnce("com.android.packageinstaller");
+
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        json: async () => mockApkRelease,
+      } as unknown as Response);
+
+      const update = await updateService.checkForAvailableUpdate("v1.3.0");
+
+      expect(update).not.toBeNull();
+      expect(fetch).toHaveBeenCalled();
+    });
+
+    it("proceeds with update check if installer query throws an error", async () => {
+      jest
+        .spyOn(DeviceInfo, "getInstallerPackageName")
+        .mockRejectedValueOnce(new Error("Native query failed"));
+
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        json: async () => mockApkRelease,
+      } as unknown as Response);
+
+      const update = await updateService.checkForAvailableUpdate("v1.3.0");
+
+      expect(update).not.toBeNull();
+      expect(fetch).toHaveBeenCalled();
+    });
 
     it("returns update info when newer APK release is found", async () => {
       global.fetch = jest.fn().mockResolvedValue({
