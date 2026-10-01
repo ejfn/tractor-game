@@ -1,6 +1,5 @@
 import "expo-sqlite/localStorage/install";
-import { Linking } from "react-native";
-import type DeviceInfoModule from "react-native-device-info";
+import { Linking, NativeModules } from "react-native";
 import { gameLogger } from "./gameLogger";
 
 export interface AppUpdateInfo {
@@ -70,6 +69,33 @@ export const isVersionNewer = (
   return false;
 };
 
+/**
+ * Safely queries the installer package name on Android.
+ * In Expo Go or environments where NativeModules.RNDeviceInfo is absent,
+ * react-native-device-info throws during module initialization.
+ * We guard against absent NativeModules.RNDeviceInfo and lazy-load the module
+ * inside a try/catch so the app can start and run cleanly in Expo Go.
+ */
+const getInstallerPackageName = async (): Promise<string | null> => {
+  try {
+    if (!NativeModules || !NativeModules.RNDeviceInfo) {
+      return null;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const DeviceInfo = require("react-native-device-info");
+    const getter =
+      DeviceInfo.getInstallerPackageName ??
+      DeviceInfo.default?.getInstallerPackageName;
+    if (typeof getter === "function") {
+      return await getter();
+    }
+    return null;
+  } catch {
+    // Gracefully proceed if check fails (e.g. unsupported platform or module error)
+    return null;
+  }
+};
+
 export const updateService = {
   /**
    * Retrieves snooze information from localStorage.
@@ -133,16 +159,9 @@ export const updateService = {
   ): Promise<AppUpdateInfo | null> {
     try {
       // Early exit on Google Play Store installs to comply with store policy and save resources
-      try {
-        const DeviceInfo: typeof DeviceInfoModule =
-          // eslint-disable-next-line @typescript-eslint/no-require-imports
-          require("react-native-device-info");
-        const installer = await DeviceInfo.getInstallerPackageName();
-        if (installer === PLAY_STORE_INSTALLER_PACKAGE) {
-          return null;
-        }
-      } catch {
-        // If installer query fails, proceed gracefully
+      const installer = await getInstallerPackageName();
+      if (installer === PLAY_STORE_INSTALLER_PACKAGE) {
+        return null;
       }
 
       const snooze = this.getUpdateSnooze();

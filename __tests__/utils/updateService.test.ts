@@ -1,4 +1,4 @@
-import { Linking } from "react-native";
+import { Linking, NativeModules } from "react-native";
 import DeviceInfo from "react-native-device-info";
 import {
   isVersionNewer,
@@ -147,6 +147,48 @@ describe("updateService", () => {
 
       expect(update).not.toBeNull();
       expect(fetch).toHaveBeenCalled();
+    });
+
+    it("proceeds with update check when NativeModules.RNDeviceInfo is absent (e.g. Expo Go)", async () => {
+      const originalRNDeviceInfo = NativeModules.RNDeviceInfo;
+      delete NativeModules.RNDeviceInfo;
+
+      try {
+        global.fetch = jest.fn().mockResolvedValue({
+          ok: true,
+          json: async () => mockApkRelease,
+        } as unknown as Response);
+
+        const update = await updateService.checkForAvailableUpdate("v1.3.0");
+        expect(update).not.toBeNull();
+        expect(fetch).toHaveBeenCalled();
+      } finally {
+        NativeModules.RNDeviceInfo = originalRNDeviceInfo;
+      }
+    });
+
+    it("supports CJS/ESM interop fallback on default export", async () => {
+      const originalMethod = DeviceInfo.getInstallerPackageName;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (DeviceInfo as any).getInstallerPackageName;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (DeviceInfo as any).default = {
+        getInstallerPackageName: jest
+          .fn()
+          .mockResolvedValueOnce(PLAY_STORE_INSTALLER_PACKAGE),
+      };
+
+      try {
+        global.fetch = jest.fn();
+        const update = await updateService.checkForAvailableUpdate("v1.3.0");
+        expect(update).toBeNull();
+        expect(fetch).not.toHaveBeenCalled();
+      } finally {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (DeviceInfo as any).getInstallerPackageName = originalMethod;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        delete (DeviceInfo as any).default;
+      }
     });
 
     it("returns update info when newer APK release is found", async () => {
