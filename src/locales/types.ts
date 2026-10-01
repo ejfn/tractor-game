@@ -161,6 +161,13 @@ export interface ModalsTranslations {
       save: string;
     };
   };
+  update: {
+    title: string;
+    message: string;
+    snoozeLabel: string;
+    later: string;
+    update: string;
+  };
 }
 
 // Union type for all translation keys
