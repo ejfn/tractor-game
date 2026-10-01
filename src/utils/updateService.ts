@@ -1,6 +1,6 @@
 import "expo-sqlite/localStorage/install";
 import { Linking } from "react-native";
-import DeviceInfo from "react-native-device-info";
+import type DeviceInfoModule from "react-native-device-info";
 import { gameLogger } from "./gameLogger";
 
 export interface AppUpdateInfo {
@@ -134,6 +134,9 @@ export const updateService = {
     try {
       // Early exit on Google Play Store installs to comply with store policy and save resources
       try {
+        const DeviceInfo: typeof DeviceInfoModule =
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          require("react-native-device-info");
         const installer = await DeviceInfo.getInstallerPackageName();
         if (installer === PLAY_STORE_INSTALLER_PACKAGE) {
           return null;
